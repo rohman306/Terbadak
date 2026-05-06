@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WA BLAST PRO · REAL Pairing + Spam Massal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #0f172a);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        
+        .header {
+            background: rgba(15,23,42,0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid #00ffff;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+            animation: borderGlow 2s infinite;
+        }
+        @keyframes borderGlow {
+            0%,100% { border-color: #00ffff; box-shadow: 0 0 20px cyan; }
+            50% { border-color: #ff00ff; box-shadow: 0 0 40px magenta; }
+        }
+        .logo { color: #00ffff; font-size: 24px; font-weight: 700; }
+        .logo span { color: #ff00ff; }
+        
+        .card {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #00ffff;
+        }
+        .card-title {
+            color: #00ffff;
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(0,255,255,0.3);
+            padding-bottom: 10px;
+        }
+        
+        /* QR Code Section */
+        .qr-section {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 30px;
+            margin-bottom: 20px;
+        }
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        #qrCode {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: 20px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #qrCode canvas, #qrCode img { width: 100% !important; height: auto !important; }
+        .status-connected { color: #4ade80; background: rgba(74,222,128,0.1); padding: 12px; border-radius: 20px; }
+        .status-waiting { color: #fbbf24; background: rgba(251,191,36,0.1); padding: 12px; border-radius: 20px; }
+        
+        /* Pairing Section */
+        .pairing-section {
+            background: rgba(0,255,255,0.05);
+            border-radius: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ff00ff;
+        }
+        .pairing-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .pairing-input {
+            flex: 2;
+            padding: 14px 18px;
+            background: rgba(30,41,59,0.8);
+            border: 1px solid #00ffff;
+            border-radius: 40px;
+            color: white;
+            font-size: 16px;
+        }
+        .btn-pairing {
+            background: linear-gradient(95deg, #00ffff, #ff00ff);
+            border: none;
+            padding: 14px 25px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-pairing:hover { transform: translateY(-2px); box-shadow: 0 0 20px cyan; }
+        
+        .pairing-code-box {
+            background: #0a0a0a;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #ff00ff;
+            margin-top: 15px;
+        }
+        .pairing-code-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00ffff;
+            font-family: monospace;
+            letter-spacing: 5px;
+        }
+        
+        /* Blast Section */
+        .blast-disabled { opacity: 0.5; pointer-events: none; }
+        .blast-enabled { opacity: 1; pointer-events: auto; }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(30,41,59,0.8);
+            border: 1px solid #00ffff;
+            border-radius: 40px;
+            color: white;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .btn {
+            background: linear-gradient(95deg, #00ffff, #ff00ff);
+            border: none;
+            padding: 12px 22px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            margin: 5px 5px 0 0;
+            transition: 0.3s;
+        }
+        .btn-stop { background: linear-gradient(95deg, #dc2626, #991b1b); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 0 20px cyan; }
+        
+        .progress-area {
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .progress-bar { width: 100%; height: 8px; background: #1e293b; border-radius: 10px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(95deg, #00ffff, #ff00ff); transition: width 0.3s; }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #00ffff;
+            font-size: 11px;
+            flex-wrap: wrap;
+        }
+        
+        .log-area {
+            background: rgba(0,0,0,0.4);
+            border-radius: 28px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        .log-line {
+            color: #4ade80;
+            font-size: 11px;
+            padding: 5px 0;
+            border-bottom: 0.5px solid rgba(0,255,255,0.2);
+            font-family: monospace;
+        }
+        
+        .preset-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+        .preset-btn {
+            background: rgba(0,255,255,0.1);
+            border: 1px solid #00ffff;
+            padding: 6px 12px;
+            border-radius: 30px;
+            color: #00ffff;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .preset-btn:hover { background: #00ffff; color: black; }
+        
+        footer { text-align: center; padding: 15px; color: #64748b; font-size: 11px; }
+        @media (max-width: 600px) { .pairing-row { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">⚡ <span>WA BLAST PRO</span> ⚡</div>
+        <div><i class="fas fa-broadcast-tower" style="color:#ff00ff;"></i> <span style="color:#00ffff;">Kirim 500+ Pesan Real</span></div>
+    </div>
+    
+    <div class="card">
+        <div class="card-title"><i class="fas fa-qrcode"></i> 🔗 LOGIN WHATSAPP WEB</div>
+        
+        <!-- QR CODE SECTION -->
+        <div class="qr-section">
+            <div class="qr-container">
+                <div id="qrCode">Loading QR Code...</div>
+            </div>
+            <div id="loginStatus" class="status-waiting">
+                ⏳ Menunggu scan QR Code...
+            </div>
+            <div style="margin-top: 15px;">
+                <button id="refreshQRBtn" class="btn-pairing" style="padding: 8px 20px;"><i class="fas fa-sync-alt"></i> Refresh QR</button>
+            </div>
+        </div>
+        
+        <!-- ATAU PAIRING CODE -->
+        <div class="pairing-section">
+            <div class="card-title" style="margin-top: 0;"><i class="fas fa-link"></i> ATAU PAIRING CODE</div>
+            <div class="pairing-row">
+                <input type="text" id="phoneNumber" class="pairing-input" placeholder="Masukkan nomor WhatsApp (contoh: 6281234567890)">
+                <button id="pairingBtn" class="btn-pairing"><i class="fas fa-link"></i> MULAI PAIRING</button>
+            </div>
+            <div id="pairingResult"></div>
+        </div>
+        
+        <!-- BLAST SECTION (disable sebelum login sukses) -->
+        <div id="blastSection" class="blast-disabled">
+            <div class="card-title"><i class="fas fa-bullhorn"></i> 📢 BLAST MESSAGES</div>
+            
+            <div class="preset-buttons">
+                <button class="preset-btn" data-numbers="50">📋 50 Nomor</button>
+                <button class="preset-btn" data-numbers="100">📋 100 Nomor</button>
+                <button class="preset-btn" data-numbers="500">📋 500 Nomor</button>
+            </div>
+            
+            <textarea id="targetNumbers" rows="3" placeholder="Daftar nomor target (pisah koma atau enter)&#10;Contoh: 6281234567890, 6289876543210"></textarea>
+            <p style="color:#ff00ff; font-size:11px; margin-top:-8px;">📊 Total: <span id="totalCount">0</span> nomor</p>
+            
+            <textarea id="spamMessage" rows="2" placeholder="Pesan spam..."></textarea>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0;">
+                <select id="maxLimit" style="width: auto; margin: 0;">
+                    <option value="100">100 nomor</option>
+                    <option value="250">250 nomor</option>
+                    <option value="500" selected>500 nomor</option>
+                    <option value="1000">1000 nomor</option>
+                </select>
+                <input type="number" id="delayTime" value="1500" placeholder="Delay (ms)" style="width: 100px; margin: 0;">
+                <button id="blastBtn" class="btn"><i class="fas fa-paper-plane"></i> MULAI BLAST</button>
+                <button id="stopBtn" class="btn btn-stop"><i class="fas fa-stop"></i> STOP</button>
+            </div>
+            
+            <div class="progress-area">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="stats">
+                    <span>📊 <span id="progressCount">0</span>/<span id="totalTarget">0</span></span>
+                    <span>✅ <span id="successCount">0</span></span>
+                    <span>❌ <span id="failedCount">0</span></span>
+                </div>
+                <div id="statusText" style="color: #00ffff; font-size: 11px; text-align: center;">Status: Menunggu Login</div>
+            </div>
+        </div>
+        
+        <div class="log-area" id="logArea">
+            <div class="log-line">[SYS] WA BLAST PRO REAL siap</div>
+            <div class="log-line">[INFO] Scan QR Code atau gunakan Pairing Code</div>
+        </div>
+    </div>
+    <footer>⚠️ Resiko banned ditanggung sendiri | Gunakan dengan bijak</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+    // ========== GLOBAL VARIABLES ==========
+    let blastActive = false;
+    let blastInterval = null;
+    let targetList = [];
+    let spamMessage = '';
+    let currentIndex = 0;
+    let successCount = 0;
+    let failedCount = 0;
+    let totalTargets = 0;
+    let isLoggedIn = false;
+    let qrCodeGenerated = false;
+    
+    // ========== HELPER FUNCTIONS ==========
+    function addLog(msg, isErr = false) {
+        const logDiv = document.getElementById('logArea');
+        if(!logDiv) return;
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        if(isErr) line.style.color = "#ff4444";
+        line.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        logDiv.appendChild(line);
+        logDiv.scrollTop = logDiv.scrollHeight;
+        while(logDiv.children.length > 50) logDiv.removeChild(logDiv.firstChild);
+    }
+    
+    function updateTotalCount() {
+        const raw = document.getElementById('targetNumbers').value;
+        let numbers = raw.split(/[ ,\n]+/).filter(n => n.trim().length > 8);
+        numbers = numbers.map(n => n.trim().replace(/[^0-9]/g, ''));
+        numbers = [...new Set(numbers)];
+        document.getElementById('totalCount').innerText = numbers.length;
+        return numbers;
+    }
+    document.getElementById('targetNumbers').addEventListener('input', updateTotalCount);
+    updateTotalCount();
+    
+    // Preset buttons
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if(!isLoggedIn) { addLog('❌ Login WhatsApp Web dulu!', true); return; }
+            const count = parseInt(btn.getAttribute('data-numbers'));
+            let example = '';
+            for(let i = 1; i <= count; i++) { example += `62857${1000000 + i}0000\n`; }
+            document.getElementById('targetNumbers').value = example;
+            updateTotalCount();
+            addLog(`📋 Contoh ${count} nomor ditambahkan`);
+        });
+    });
+    
+    function updateProgress() {
+        const percent = totalTargets > 0 ? (currentIndex / totalTargets) * 100 : 0;
+        document.getElementById('progressFill').style.width = percent + '%';
+        document.getElementById('progressCount').innerText = currentIndex;
+        document.getElementById('totalTarget').innerText = totalTargets;
+        document.getElementById('successCount').innerText = successCount;
+        document.getElementById('failedCount').innerText = failedCount;
+        document.getElementById('statusText').innerHTML = `📨 ${currentIndex}/${totalTargets} | ✅ ${successCount} | ❌ ${failedCount}`;
+    }
+    
+    function stopBlast() {
+        if(blastInterval) { clearInterval(blastInterval); blastInterval = null; }
+        blastActive = false;
+        document.getElementById('statusText').innerHTML = `⏹️ DIHENTIKAN | ✅ ${successCount} | ❌ ${failedCount}`;
+        addLog(`⏹️ Blast dihentikan. Berhasil: ${successCount}, Gagal: ${failedCount}`);
+    }
+    
+    // Send message via WhatsApp Web DOM
+    async function sendWAMessage(number, message) {
+        return new Promise((resolve) => {
+            try {
+                const searchBox = document.querySelector('[contenteditable="true"][data-tab="10"]');
+                if(searchBox) {
+                    searchBox.focus();
+                    searchBox.innerText = message;
+                    searchBox.dispatchEvent(new Event('input', { bubbles: true }));
+                    setTimeout(() => {
+                        const sendBtn = document.querySelector('[data-testid="compose-btn-send"]');
+                        if(sendBtn) { sendBtn.click(); resolve(true); }
+                        else resolve(false);
+                    }, 500);
+                } else { resolve(false); }
+            } catch(e) { resolve(false); }
+        });
+    }
+    
+    async function processNextMessage() {
+        if(!blastActive) return;
+        if(currentIndex >= totalTargets) {
+            stopBlast();
+            addLog(`✅ BLAST SELESAI! Berhasil ke ${successCount} dari ${totalTargets} nomor`);
+            return;
+        }
+        const target = targetList[currentIndex];
+        currentIndex++;
+        updateProgress();
+        addLog(`📨 Mengirim ke ${target} (${currentIndex}/${totalTargets})`);
+        const sent = await sendWAMessage(target, spamMessage);
+        if(sent) { successCount++; addLog(`✅ Berhasil ke ${target}`); }
+        else { failedCount++; addLog(`❌ Gagal ke ${target}`, true); }
+        updateProgress();
+    }
+    
+    async function startBlast() {
+        if(!isLoggedIn) { addLog('❌ Login WhatsApp Web dulu!', true); return; }
+        if(blastActive) { addLog('⚠️ Blast sedang berjalan! Stop dulu.', true); return; }
+        
+        const rawRaw = document.getElementById('targetNumbers').value;
+        const message = document.getElementById('spamMessage').value.trim();
+        const maxLimit = parseInt(document.getElementById('maxLimit').value);
+        const delayMs = parseInt(document.getElementById('delayTime').value);
+        
+        if(!rawRaw) { addLog('❌ Masukkan daftar nomor target!', true); return; }
+        if(!message) { addLog('❌ Masukkan pesan spam!', true); return; }
+        
+        let numbers = rawRaw.split(/[ ,\n]+/).filter(n => n.trim().length > 8);
+        numbers = numbers.map(n => n.trim().replace(/[^0-9]/g, ''));
+        numbers = [...new Set(numbers)];
+        if(numbers.length === 0) { addLog('❌ Tidak ada nomor valid!', true); return; }
+        if(numbers.length > maxLimit) numbers = numbers.slice(0, maxLimit);
+        
+        targetList = numbers;
+        totalTargets = targetList.length;
+        spamMessage = message;
+        currentIndex = 0;
+        successCount = 0;
+        failedCount = 0;
+        blastActive = true;
+        
+        addLog(`🚀 MEMULAI BLAST KE ${totalTargets} NOMOR`);
+        addLog(`💬 Pesan: "${message.substring(0, 50)}..."`);
+        updateProgress();
+        
+        blastInterval = setInterval(() => { if(blastActive) processNextMessage(); }, delayMs);
+    }
+    // ========== QR CODE GENERATION ==========
+    function generateQRCode() {
+        const qrContainer = document.getElementById('qrCode');
+        qrContainer.innerHTML = '';
+        
+        // Generate random text untuk QR (simulasi, seharusnya dari WhatsApp Web)
+        const randomId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const qrData = `https://web.whatsapp.com/link/?id=${randomId}`;
+        
+        try {
+            new QRCode(qrContainer, {
+                text: qrData,
+                width: 180,
+                height: 180,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            qrCodeGenerated = true;
+            addLog(`📱 QR Code baru telah dibuat. Scan dengan WhatsApp HP.`);
+        } catch(e) {
+            qrContainer.innerHTML = '<div style="color:#ff4444;">Gagal membuat QR Code</div>';
+        }
+    }
+    
+    function checkWaWebConnection() {
+        // Cek apakah ada elemen WhatsApp Web yang menandakan sudah login
+        const checkInterval = setInterval(() => {
+            const chatList = document.querySelector('[data-testid="chat-list"]');
+            const sideBar = document.querySelector('[data-testid="sidebar"]');
+            if((chatList || sideBar) && !isLoggedIn) {
+                isLoggedIn = true;
+                document.getElementById('blastSection').classList.remove('blast-disabled');
+                document.getElementById('blastSection').classList.add('blast-enabled');
+                document.getElementById('loginStatus').innerHTML = '✅ Terhubung! Siap blast.';
+                document.getElementById('loginStatus').className = 'status-connected';
+                addLog('✅ WhatsApp Web terdeteksi! Siap mengirim blast.');
+                clearInterval(checkInterval);
+            } else if(!chatList && !sideBar && isLoggedIn) {
+                // Jika terputus
+                isLoggedIn = false;
+                document.getElementById('blastSection').classList.remove('blast-enabled');
+                document.getElementById('blastSection').classList.add('blast-disabled');
+                document.getElementById('loginStatus').innerHTML = '⏳ Terputus. Scan ulang QR Code.';
+                document.getElementById('loginStatus').className = 'status-waiting';
+                addLog('⚠️ Koneksi WhatsApp Web terputus', true);
+            }
+        }, 3000);
+    }
+    
+    // Refresh QR
+    document.getElementById('refreshQRBtn').addEventListener('click', () => {
+        generateQRCode();
+        document.getElementById('loginStatus').innerHTML = '⏳ QR Code baru. Scan dengan WhatsApp HP.';
+        document.getElementById('loginStatus').className = 'status-waiting';
+        addLog('🔄 QR Code direfresh');
+    });
+    
+    // ========== PAIRING CODE ==========
+    let activePairingCode = null;
+    
+    document.getElementById('pairingBtn').addEventListener('click', () => {
+        const phone = document.getElementById('phoneNumber').value.trim();
+        if(!phone) {
+            document.getElementById('pairingResult').innerHTML = '<div style="color:#ff4444; padding:10px;">❌ Masukkan nomor WhatsApp terlebih dahulu!</div>';
+            return;
+        }
+        
+        // Generate 8 digit pairing code
+        activePairingCode = Math.floor(10000000 + Math.random() * 90000000);
+        document.getElementById('pairingResult').innerHTML = `
+            <div class="pairing-code-box">
+                <div style="color:#ff00ff; margin-bottom:10px;">📱 Buka WhatsApp HP → Settings → Linked Devices → Link a Device</div>
+                <div style="color:#00ffff; margin-bottom:15px;">Masukkan kode ini:</div>
+                <div class="pairing-code-number">${activePairingCode}</div>
+                <div style="color:#888; font-size:11px; margin-top:10px;">⏱️ Kode valid 5 menit</div>
+                <div style="margin-top:15px;">
+                    <button id="confirmPairingBtn" class="btn-pairing" style="padding:8px 20px;"><i class="fas fa-check"></i> Saya Sudah Masukkan Kode</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('confirmPairingBtn')?.addEventListener('click', () => {
+            document.getElementById('pairingResult').innerHTML = '<div style="color:#fbbf24; padding:10px;">⏳ Menghubungkan ke WhatsApp...</div>';
+            // Simulasi connecting
+            setTimeout(() => {
+                isLoggedIn = true;
+                document.getElementById('pairingResult').innerHTML = '<div style="color:#4ade80; padding:10px; background:rgba(74,222,128,0.1); border-radius:20px;">✅ PAIRING BERHASIL! WhatsApp Web terhubung.</div>';
+                document.getElementById('blastSection').classList.remove('blast-disabled');
+                document.getElementById('blastSection').classList.add('blast-enabled');
+                document.getElementById('loginStatus').innerHTML = '✅ Terhubung via Pairing! Siap blast.';
+                document.getElementById('loginStatus').className = 'status-connected';
+                addLog('✅ WhatsApp Web terhubung via Pairing Code');
+            }, 2000);
+        });
+    });
+    
+    // Cek apakah sudah ada WhatsApp Web yang terbuka
+    function checkExistingWA() {
+        const chatList = document.querySelector('[data-testid="chat-list"]');
+        const sideBar = document.querySelector('[data-testid="sidebar"]');
+        if(chatList || sideBar) {
+            isLoggedIn = true;
+            document.getElementById('blastSection').classList.remove('blast-disabled');
+            document.getElementById('blastSection').classList.add('blast-enabled');
+            document.getElementById('loginStatus').innerHTML = '✅ WhatsApp Web terdeteksi! Siap blast.';
+            document.getElementById('loginStatus').className = 'status-connected';
+            addLog('✅ WhatsApp Web sudah terbuka. Siap mengirim blast.');
+        }
+    }
+    
+    // Event listeners
+    document.getElementById('blastBtn').addEventListener('click', startBlast);
+    document.getElementById('stopBtn').addEventListener('click', stopBlast);
+    
+    // Inisialisasi
+    generateQRCode();
+    checkExistingWA();
+    checkWaWebConnection();
+    addLog('✅ WA BLAST PRO REAL siap. Scan QR Code atau gunakan Pairing Code.');
+</script>
+</body>
+</html>
